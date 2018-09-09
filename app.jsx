@@ -1,53 +1,90 @@
-function Application() {
+var PLAYERS = [
+  {
+  name: "Michael Salvati",
+  score: 32,
+  id: 1,
+  },
+  {
+    name: "Scoobie Harris",
+    score: 20,
+    id: 2,
+  },
+  {
+    name: "Yoba Ari",
+    score: 40,
+    id: 3,
+  },
+]
+
+function Header(props) {
+  return (
+    <div className="header">
+      <h1>{props.title}</h1>
+    </div>
+  );
+}
+
+Header.propTypes = {
+  title: React.PropTypes.string.isRequired,
+}
+
+function Counter(props) {
+  return (
+    <div className="counter">
+      <button className="counter-action decrement">-</button>
+      <div className="counter-score"> {props.score} </div>
+      <button className="counter-action increment">+</button>
+    </div>
+  );
+}
+
+Counter.propTypes = {
+  score: React.PropTypes.number.isRequired,
+};
+
+function Player(props) {
+  return (
+    <div className="player">
+      <div className="player-name">
+        {props.name}
+      </div>
+      <div className="player-score">
+        <Counter score={props.score} />
+      </div>
+    </div>
+  );
+}
+
+Player.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  score: React.PropTypes.number.isRequired,
+};
+
+function Application(props) {
 return (
 <div className="scoreboard">
-  <div className="header">
-    <h1>Scoreboard</h1>
-  </div>
+  <Header title={props.title}/>
 
   <div className="players">
-    <div className="player">
-      <div className="player-name">
-        Michael Salvati
-      </div>
-      <div className="player-score">
-        <div className="counter">
-          <button className="counter-action decrement">
-            -
-          </button>
-          <div className="counter-score">
-            31
-          </div>
-          <button className="counter-action increment">
-            +
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div className="player">
-      <div className="player-name">
-        Boobie Harris
-      </div>
-      <div className="player-score">
-        <div className="counter">
-          <button className="counter-action decrement">
-            -
-          </button>
-          <div className="counter-score">
-            20
-          </div>
-          <button className="counter-action increment">
-            +
-          </button>
-        </div>
-      </div>
-    </div>
-
+  {props.players.map(function(player) {
+    return <Player name={player.name} score={player.score} key={player.id} />
+  })}
   </div>
+
 </div>
 );
 }
 
-ReactDOM.render(
-<Application />, document.getElementById('container'));
+Application.propTypes = {
+  title: React.PropTypes.string,
+  players: React.PropTypes.arrayOf(React.PropTypes.shape({
+    name: React.PropTypes.string.isRequired,
+    score: React.PropTypes.number.isRequired,
+    id: React.PropTypes.number.isRequired,
+  })).isRequired,
+};
+
+Application.defaultProps = {
+  title: "Scoreboard",
+}
+ReactDOM.render(<Application players={PLAYERS} />, document.getElementById('container'));
